@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Header/>
+    <Search v-on:input="handleSearch(input)"/>
     <AddTodo v-on:add-todo="addTodo"/>
     <Todos v-bind:todos="todos" v-on:del-todo="deleteTodo"/>
   </div>
@@ -10,12 +11,14 @@
 import Todos from '../components/Todos'
 import AddTodo from '../components/AddTodo'
 import axios from "axios";
+import Search from "../components/Search"
 
 export default {
   name: 'Home',
   components: {
     Todos,
-    AddTodo
+    AddTodo,
+    Search
   },
   data() {
     return {
@@ -39,6 +42,13 @@ export default {
       .catch(err => console.log(err))
       
     }
+  },
+    computed: {
+    handleSearch() {
+      return this.todos.filter((todo) => {
+        return todo.title.toLowerCase().includes(this.input.toLowerCase());
+      });
+    },
   },
   created() {
     axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5 ')
